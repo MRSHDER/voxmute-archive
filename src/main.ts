@@ -141,7 +141,16 @@ function drawBoot(t: number) {
   ctx.globalAlpha = 1;
 }
 
-function cell(x: number, y: number, w: number, h: number, label: string, seed: number, t: number) {
+function cell(
+  x: number,
+  y: number,
+  w: number,
+  h: number,
+  label: string,
+  seed: number,
+  t: number,
+  withSubject = false,
+) {
   ctx.save();
   ctx.beginPath();
   ctx.rect(x, y, w, h);
@@ -150,7 +159,7 @@ function cell(x: number, y: number, w: number, h: number, label: string, seed: n
   ctx.fillRect(x, y, w, h);
   ctx.fillStyle = "#0b0c0d";
   ctx.fillRect(x + 8, y + 32, w - 16, h - 40);
-  drawSubject(x + w * 0.5, y + 28, h - 48, 0.95);
+  if (withSubject) drawSubject(x + w * 0.5, y + 28, h - 48, 0.95);
   for (let i = 0; i < 6; i++) {
     const yy = y + ((t * 40 + i * 28 + seed * 13) % h);
     ctx.fillStyle = `rgba(214,255,58,${0.03 + 0.03 * hash(seed + i)})`;
@@ -182,7 +191,16 @@ function drawMonitors(t: number) {
   const cw = (W - gridX * 2 - gap * (cols - 1)) / cols;
   const ch = (H - gridY - 64 - gap) / 2;
   for (let i = 0; i < 6; i++) {
-    cell(gridX + (i % cols) * (cw + gap), gridY + Math.floor(i / cols) * (ch + gap), cw, ch, labels[i], 17 + i * 9, t);
+    cell(
+      gridX + (i % cols) * (cw + gap),
+      gridY + Math.floor(i / cols) * (ch + gap),
+      cw,
+      ch,
+      labels[i],
+      17 + i * 9,
+      t,
+      i === 0, // only CAM-03 HOLD A carries the subject
+    );
   }
   if (Math.sin(t * 8) > 0) {
     ctx.fillStyle = C.warn;
