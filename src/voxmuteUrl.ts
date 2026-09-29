@@ -1,7 +1,9 @@
-export const VOXMUTE_URL = "/voxmute.webp";
+// Resolve against Vite's base so the assets work both locally ("/") and on
+// GitHub Pages ("/voxmute-archive/"). BASE_URL always ends with a slash.
+export const VOXMUTE_URL = `${import.meta.env.BASE_URL}voxmute.webp`;
 
 /** Bust crop used by the end card. */
-export const VOXMUTE_CARD_URL = "/voxmute-card.webp";
+export const VOXMUTE_CARD_URL = `${import.meta.env.BASE_URL}voxmute-card.webp`;
 
 /**
  * Optional diagnostics for the Canvas renderer.
