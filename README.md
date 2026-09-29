@@ -1,8 +1,17 @@
 # VoxMute / 折声 — TXC Internal Archive
 
+**在线播放：https://voxmute-archive.vercel.app**
+
 低配可运行的代码渲染短片。用 Vite + TypeScript + HTML Canvas 在浏览器里播一段约 30 秒的 16:9（1920×1080）内部档案画面，方便用 OBS 或系统录屏出片。
 
 不做 React、不做 three.js、没有后端、不依赖图片素材。
+
+## 链接
+
+| | |
+| --- | --- |
+| 仓库 | https://github.com/MRSHDER/voxmute-archive |
+| 部署网址 | https://voxmute-archive.vercel.app |
 
 ## 启动
 
