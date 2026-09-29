@@ -1,5 +1,8 @@
 export const VOXMUTE_URL = "/voxmute.webp";
 
+/** Bust crop used by the end card. */
+export const VOXMUTE_CARD_URL = "/voxmute-card.webp";
+
 /**
  * Optional diagnostics for the Canvas renderer.
  *

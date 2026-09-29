@@ -1,5 +1,5 @@
 import "./style.css";
-import { VOXMUTE_URL } from "./voxmuteUrl";
+import { VOXMUTE_URL, VOXMUTE_CARD_URL } from "./voxmuteUrl";
 
 const DURATION = 30;
 const W = 1920;
@@ -28,6 +28,9 @@ const C = {
 const subject = new Image();
 subject.src = VOXMUTE_URL;
 
+const cardSubject = new Image();
+cardSubject.src = VOXMUTE_CARD_URL;
+
 let playing = true;
 let t0 = performance.now();
 let elapsed = 0;
@@ -46,12 +49,12 @@ function noise1(x: number) {
   return lerp(hash(i), hash(i + 1), f * f * (3 - 2 * f));
 }
 
-function drawSubject(x: number, y: number, h: number, alpha = 1) {
-  if (!subject.complete || !subject.naturalWidth) return;
-  const w = h * (subject.naturalWidth / subject.naturalHeight);
+function drawSubject(x: number, y: number, h: number, alpha = 1, img: HTMLImageElement = subject) {
+  if (!img.complete || !img.naturalWidth) return;
+  const w = h * (img.naturalWidth / img.naturalHeight);
   ctx.save();
   ctx.globalAlpha = alpha;
-  ctx.drawImage(subject, x - w / 2, y, w, h);
+  ctx.drawImage(img, x - w / 2, y, w, h);
   ctx.restore();
 }
 
@@ -363,7 +366,7 @@ function drawCard(t: number) {
   ctx.fillRect(0, 0, W, H);
   drawScanlines(t * 0.3);
   const a = easeOut((t - 27.2) / 0.8);
-  drawSubject(W / 2, 30, 520, a);
+  drawSubject(W / 2, 30, 520, a, cardSubject);
   ctx.globalAlpha = a;
   ctx.textAlign = "center";
   ctx.fillStyle = C.text;
