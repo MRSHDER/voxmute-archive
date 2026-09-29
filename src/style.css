@@ -14,6 +14,7 @@ body {
   height: 100%;
   background: #050506;
   overflow: hidden;
+  cursor: none;
   font-family: "IBM Plex Mono", "Source Han Sans SC", "Noto Sans SC",
     "PingFang SC", "Microsoft YaHei", monospace;
 }
@@ -24,6 +25,7 @@ body {
   display: grid;
   place-items: center;
   background: #000;
+  cursor: none;
 }
 
 #frame {
@@ -31,6 +33,7 @@ body {
   height: min(100vh, calc(100vw * 9 / 16));
   background: #000;
   image-rendering: auto;
+  cursor: none;
 }
 
 #hud {
