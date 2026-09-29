@@ -202,7 +202,7 @@ function drawMonitors(t: number) {
       labels[i],
       17 + i * 9,
       t,
-      i === 0, // only CAM-03 HOLD A carries the subject
+      i === 0,
     );
   }
   if (Math.sin(t * 8) > 0) {
@@ -366,24 +366,24 @@ function drawCard(t: number) {
   ctx.fillRect(0, 0, W, H);
   drawScanlines(t * 0.3);
   const a = easeOut((t - 27.2) / 0.8);
-  drawSubject(W / 2, 30, 520, a, cardSubject);
+  drawSubject(W / 2, 96, 500, a, cardSubject);
   ctx.globalAlpha = a;
   ctx.textAlign = "center";
   ctx.fillStyle = C.text;
   ctx.font = "64px ui-monospace, Menlo, Consolas, monospace";
-  ctx.fillText("VoxMute", W / 2, 600);
+  ctx.fillText("VoxMute", W / 2, 640);
   ctx.fillStyle = C.acid;
   ctx.font = "48px 'PingFang SC','Microsoft YaHei',sans-serif";
-  ctx.fillText("折声", W / 2, 662);
+  ctx.fillText("折声", W / 2, 702);
   ctx.fillStyle = C.line;
-  ctx.fillRect(W / 2 - 160, 690, 320, 1);
+  ctx.fillRect(W / 2 - 160, 730, 320, 1);
   ctx.fillStyle = C.mute;
   ctx.font = "22px ui-monospace, Menlo, Consolas, monospace";
-  ctx.fillText("Art by MRSHDER", W / 2, 738);
-  ctx.fillText("Character Design by Goose hair", W / 2, 778);
+  ctx.fillText("Art by MRSHDER", W / 2, 778);
+  ctx.fillText("Character Design by Goose hair", W / 2, 818);
   ctx.fillStyle = C.dim;
   ctx.font = "14px ui-monospace, Menlo, Consolas, monospace";
-  ctx.fillText("NON-VERBAL SIGNAL SUBJECT", W / 2, 834);
+  ctx.fillText("NON-VERBAL SIGNAL SUBJECT", W / 2, 874);
   ctx.globalAlpha = 1;
 }
 
