@@ -1,4 +1,7 @@
 import "./style.css";
+import { score } from "./sound";
+// 仅用于录制演示（构建时设 VITE_CAPTURE=1），正式版本不会暴露
+if (import.meta.env.VITE_CAPTURE) (window as unknown as { __score: typeof score }).__score = score;
 
 /* =========================================================
    折声 / VoxMute — TXC 内部档案
@@ -18,6 +21,8 @@ const $ = <T extends HTMLElement = HTMLElement>(s: string) => document.querySele
 function progress(section: HTMLElement): number {
   if (reduce) return 1;
   const r = section.getBoundingClientRect();
+  // 普通滚动模式（纸页高于屏幕时）：随纸页进入视口逐步显现，底部到达屏幕 85% 处时完成
+  if (section.classList.contains("flow")) return clamp((innerHeight * .85 - r.top) / Math.max(1, r.height - innerHeight * .1));
   const total = r.height - innerHeight;
   return total <= 0 ? 1 : clamp(-r.top / total);
 }
@@ -85,7 +90,7 @@ const locked = $<HTMLButtonElement>("#locked-field"), lockedMsg = $("#locked-msg
 let lockTries = 0;
 locked.addEventListener("click", () => {
   lockTries++;
-  lockedMsg.textContent = lockTries < 3 ? "权限不足：需三级以上授权" : "不存在可供调阅的记录";
+  lockedMsg.textContent = lockTries < 3 ? "权限不足：需三级以上授权　Access denied: level 3 clearance required" : "不存在可供调阅的记录　No retrievable record exists";
   locked.classList.remove("denied"); void locked.offsetWidth; locked.classList.add("denied");
 });
 
@@ -94,7 +99,7 @@ const p2 = $("#p2"), wave = $<HTMLCanvasElement>("#wave"), waveState = $("#wave-
 let wavePointer: { x: number; y: number } | null = null;
 wave.addEventListener("pointermove", e => { const r = wave.getBoundingClientRect(); wavePointer = { x: e.clientX - r.left, y: e.clientY - r.top }; });
 wave.addEventListener("pointerleave", () => { wavePointer = null; });
-let carrierBoost = 0;
+let carrierBoost = 0, snipped = false, waveCarrier = 0;
 
 function drawWave(p: number, t: number) {
   const { ctx, w, h } = fit(wave);
@@ -138,29 +143,44 @@ function drawWave(p: number, t: number) {
     ctx.strokeStyle = "#d9dbd4"; ctx.setLineDash([3, 4]); ctx.lineWidth = 1;
     ctx.beginPath(); ctx.moveTo(cutX, 0); ctx.lineTo(cutX, h * drop); ctx.stroke(); ctx.setLineDash([]);
   }
-  waveState.textContent = cut > .9 ? `已切断　载波 ${(87 + carrierBoost * 6).toFixed(1)} Hz` : "记录中";
+  waveState.textContent = cut > .9 ? `可听声 AUDIBLE 0　载波 CARRIER ${(87 + carrierBoost * 6).toFixed(1)} Hz` : "记录中 REC";
+  if (cut > .9 && !snipped) { snipped = true; score.snip(); }
+  if (cut < .5) snipped = false;
+  waveCarrier = carrierBoost * cut;
   waveState.classList.toggle("cut", cut > .9);
 }
 
 /* ======================= 第 3 页：体征扫描 ======================= */
 const p3 = $("#p3"), monitor = p3.querySelector<HTMLElement>(".monitor")!, scan = $<HTMLCanvasElement>("#scan");
 const scanPct = $("#scan-pct"), reticle = $("#reticle"), reticleXY = $("#reticle-xy"), calloutList = $("#callouts");
-type Part = { id: string; name: string; x: number; y: number; text: string; star?: boolean };
+type Part = { id: string; name: string; nameEn: string; x: number; y: number; text: string; textEn: string; star?: boolean };
 // 坐标是在 2048×2048 全身图上取的相对位置
 const PARTS: Part[] = [
-  { id: "ear", name: "耳标 i0", x: .673, y: .103, text: "收容标签。编号末两位“i0”的含义没有登记，经办人一栏被涂黑。" },
-  { id: "eye", name: "目视单元", x: .53, y: .217, text: "黄绿色虹膜，瞳孔正中有一点红。对光和注视都有反应——被观察时，它会回看。" },
-  { id: "mouth", name: "缝合口", x: .49, y: .27, text: "切断手术留下的缝合痕，呈锯齿像素状。口部开合正常，只是没有声音。" },
-  { id: "star", name: "胸口信号源", x: .5, y: .445, text: "载波的源头，一枚钴蓝色四芒星。读数升高时会亮起，两颊的同色标记随之闪烁。", star: true },
-  { id: "chain", name: "约束装置", x: .686, y: .49, text: "腕部束环和断链。链条在收容第三日凌晨断开，录像里对象没有移动。" },
-  { id: "tail", name: "尾部", x: .855, y: .68, text: "情绪最可靠的指标。日志显示，载波上扬之前，尾巴总是先动。" },
+  { id: "ear", name: "耳饰 i0", nameEn: "Ear tag i0", x: .673, y: .103,
+    text: "耳部饰物，刻有“i0”。对象未说明含义，本记录不作推测。",
+    textEn: "Ear ornament engraved “i0”. The subject has not explained it; this record makes no assumptions." },
+  { id: "eye", name: "海盗脸", nameEn: "Pirate face", x: .53, y: .217,
+    text: "一侧眼周为深色毛，边牧常见的“海盗脸”花色，整体花色杂乱、不对称。黄绿色虹膜，瞳孔正中有一点红。视觉正常，未见 TXC 相关改变。",
+    textEn: "Dark fur around one eye: the “pirate face” common in border collies; the coat overall is patchy and uneven. Yellow-green irises with a red point at the centre. Vision normal; no TXC-related change." },
+  { id: "mouth", name: "缝合痕", nameEn: "Sutures", x: .49, y: .27,
+    text: "喉部锐器伤后的缝合痕。致伤者与时间不明，与 TXC 无关。口部开合正常，只是没有声音。",
+    textEn: "Sutures from the sharp-force throat injury. Assailant and date unknown; unrelated to TXC. The mouth opens and closes normally. There is just no sound." },
+  { id: "star", name: "胸口标记", nameEn: "Chest mark", x: .5, y: .445, star: true,
+    text: "钴蓝色四芒星。载波上扬时读数集中于此处；是否与 TXC 定殖部位有关，待查。",
+    textEn: "Cobalt four-pointed star. Carrier readings concentrate here as they rise. Whether it marks a TXC colonisation site is under investigation." },
+  { id: "chain", name: "腕部束环", nameEn: "Wrist cuffs", x: .686, y: .49,
+    text: "带断链的金属束环，接触前已佩戴。来历未登记，对象拒绝说明。",
+    textEn: "Metal cuffs with broken chains, worn before first contact. Origin unrecorded; the subject declined to explain." },
+  { id: "tail", name: "尾部", nameEn: "Tail", x: .855, y: .68,
+    text: "无法发声后，情绪主要体现在尾部。观察中，载波上扬前尾部常先有动作。",
+    textEn: "Without a voice, emotion shows mostly in the tail. In observation, the tail often moves before the carrier rises." },
 ];
 calloutList.innerHTML = PARTS.map(p => `
   <li class="callout ${p.x < .5 ? "left" : ""} ${p.star ? "star" : ""}" data-part="${p.id}">
     <button type="button" aria-expanded="false" aria-controls="d-${p.id}">
-      <span class="dot"></span><span class="lead"></span><span class="name">${p.name}</span>
+      <span class="dot"></span><span class="lead"></span><span class="name">${p.name}<small lang="en">${p.nameEn}</small></span>
     </button>
-    <p class="detail" id="d-${p.id}">${p.text}</p>
+    <div class="detail" id="d-${p.id}">${p.text}<span class="en" lang="en">${p.textEn}</span></div>
   </li>`).join("");
 calloutList.addEventListener("click", e => {
   const btn = (e.target as HTMLElement).closest("button"); if (!btn) return;
@@ -169,7 +189,8 @@ calloutList.addEventListener("click", e => {
   if (open) { btn.setAttribute("aria-expanded", "true"); btn.nextElementSibling!.classList.add("open"); }
   // 窄屏：详情放到屏幕底部的条里
   const detail = $("#scan-detail");
-  detail.textContent = open ? `${btn.querySelector(".name")!.textContent}：${btn.nextElementSibling!.textContent}` : "";
+  const part = PARTS.find(q => q.id === btn.closest<HTMLElement>("li")!.dataset.part)!;
+  detail.innerHTML = open ? `${part.name}：${part.text}<span class="en" lang="en">${part.nameEn}: ${part.textEn}</span>` : "";
   detail.classList.toggle("open", open);
 });
 let scanPointer: { x: number; y: number } | null = null, gaze = 0;
@@ -241,53 +262,60 @@ function drawScan(p: number, t: number) {
     const px = bx + part.x * size, py = by + part.y * size;
     li.style.left = `${px}px`; li.style.top = `${py}px`;
     li.classList.toggle("left", part.x < .5 || px + 130 > w);   // 右侧放不下时翻到左边
-    li.classList.toggle("on", scanY > py + 4);
+    const was = li.classList.contains("on"), now = scanY > py + 4;
+    li.classList.toggle("on", now);
+    if (now && !was && !reduce) score.blip();
   });
-  scanPct.textContent = `${String(Math.round(sp * 100)).padStart(2, "0")}%${sp >= 1 ? "　扫描完成" : ""}`;
+  scanPct.textContent = `${String(Math.round(sp * 100)).padStart(2, "0")}%${sp >= 1 ? "　扫描完成 SCAN COMPLETE" : ""}`;
   if (scanPointer) {
     const nx = (scanPointer.x - bx) / size, ny = (scanPointer.y - by) / size;
     const inside = nx >= 0 && nx <= 1 && ny >= 0 && ny <= 1;
-    reticleXY.textContent = inside ? `X ${nx.toFixed(3)}  Y ${ny.toFixed(3)}  注视 ${(gaze * 100).toFixed(0)}` : "目标外";
+    reticleXY.textContent = inside ? `X ${nx.toFixed(3)}  Y ${ny.toFixed(3)}  注视 GAZE ${(gaze * 100).toFixed(0)}` : "目标外 OFF TARGET";
   }
 }
 
 /* ======================= 第 4 页：观察日志 ======================= */
-const p4 = $("#p4"), logEl = $("#log"), meterFill = $("#meter-fill"), meterVal = $("#meter-val");
-const LOG: [string, string][] = [
-  ["第1日 09:12", "对象入住 HOLD A。全程未发出声音。"],
-  ["第1日 21:40", "房间麦克风出现一条窄带信号。排查设备后确认，来源是对象本身。"],
-  ["第3日 03:07", "腕部链条断开。录像中对象没有移动。"],
-  ["第3日 03:08", "载波短暂上扬。值班员称“像是在说话”，该描述已从记录中删除。"],
-  ["第6日 14:30", "观察员靠近玻璃时读数稳定上升，离开后回落。"],
-  ["第9日 ——", "对象开始回看监控镜头。"],
+const p4 = $("#p4"), logEl = $("#log"), meterFill = $("#meter-fill"), meterVal = $("#meter-val"), glucoseEl = $("#glucose");
+const LOG: [string, string, string, string][] = [
+  ["2019 ██", "", "首次接触，地点为海川 ██ 区。对象于“病毒战”期间辗转多地，经 ██ 转介。", "First contact in ██ District, Haichuan. The subject had been on the move throughout the “Virus War”; referred by ██."],
+  ["接触 +1日", "Day +1", "问诊以书写进行。对象称喉部伤为他人所致，拒绝说明时间与经过。", "Interview held in writing. The subject states the throat injury was inflicted by someone else and declines to say when or how."],
+  ["接触 +2日", "Day +2", "TXC 检测阳性，载量极低。对象表示从未察觉身体异常。分级：稳定携带。", "TXC test positive, very low load. The subject reports never noticing anything unusual. Class: stable carrier."],
+  ["接触 +4日", "Day +4", "声学检查中，观察室麦克风记录到窄带载波，方位与对象一致。", "During acoustic tests the room microphone recorded a narrow-band carrier at the subject’s position."],
+  ["接触 +5日", "Day +5", "载波上扬时测得血糖轻微下降，对象无自觉症状。代谢代价远低于已知能力型个案。", "A slight drop in blood glucose as the carrier rose; no symptoms reported. Metabolic cost far below known ability-type cases."],
+  ["接触 +9日", "Day +9", "复核人 赫█：建议继续观察，不建议任何干预。", "Reviewer H█: continue observation; no intervention recommended."],
+  ["接触 +12日", "Day +12", "对象离开海川，未留联系方式。随访中断。", "The subject left Haichuan without contact details. Follow-up discontinued."],
 ];
-logEl.innerHTML = LOG.map(([time, text]) => `<li hidden><time>${time}</time><span data-text="${text}"></span></li>`).join("");
+logEl.innerHTML = LOG.map(([time, timeEn, text, en]) => `<li hidden><time>${time}${timeEn ? `<small lang="en">${timeEn}</small>` : ""}</time><div><span class="zh" data-text="${text}"></span><span class="en" lang="en" hidden>${en}</span></div></li>`).join("");
 const logItems = [...logEl.querySelectorAll<HTMLLIElement>("li")];
-let logHover = 0, logNear = 0;
+let logHover = 0, logNear = 0, logCarrier = 0;
 p4.querySelector(".sheet")!.addEventListener("pointermove", () => { logNear = 1; });
 p4.querySelector(".sheet")!.addEventListener("pointerleave", () => { logNear = 0; });
 
 function drawLog(p: number) {
   const n = LOG.length, f = smooth(.05, .85, p) * n;
   logItems.forEach((li, i) => {
-    const span = li.querySelector("span")!, text = span.dataset.text!;
+    const span = li.querySelector<HTMLElement>(".zh")!, text = span.dataset.text!;
     const k = clamp(f - i);
     li.hidden = k <= 0;
     span.textContent = text.slice(0, Math.ceil(text.length * k));
     span.classList.toggle("typing", k > 0 && k < 1);
+    li.querySelector<HTMLElement>(".en")!.hidden = k < 1;
   });
   logHover += (logNear - logHover) * .05;
   const v = 1.2 + smooth(.05, .85, p) * 2.6 + logHover * 1.6;
   meterFill.style.width = `${clamp(v / 6) * 100}%`;
   meterFill.classList.toggle("hot", v > 4.2);
   meterVal.textContent = v.toFixed(1);
+  // TXC 不是魔法蓝条，是一笔代谢账：载波越高，血糖越低（幅度很小，对象本人察觉不到）
+  glucoseEl.textContent = `血糖 GLUCOSE −${Math.max(0, (v - 1.2) * .06).toFixed(2)}`;
+  logCarrier = clamp((v - 1.2) / 4.2);
 }
 
 /* ======================= 第 5 页：影像解封 ======================= */
 const p5 = $("#p5"), card = $<HTMLCanvasElement>("#card"), portrait = $("#portrait");
 let cardImg: HTMLImageElement | null = null, cardEdges: HTMLCanvasElement | null = null;
 const rings: number[] = [];
-portrait.addEventListener("click", () => rings.push(performance.now()));
+portrait.addEventListener("click", () => { rings.push(performance.now()); score.bell(587.33, .09); });
 portrait.addEventListener("pointermove", e => {
   if (reduce) return;
   const r = portrait.getBoundingClientRect(), nx = (e.clientX - r.left) / r.width - .5, ny = (e.clientY - r.top) / r.height - .5;
@@ -317,6 +345,19 @@ function drawCard(p: number, t: number) {
   void t;
 }
 
+/* ======================= 版式：纸页放不进一屏时改为普通滚动 ======================= */
+function layout() {
+  // 按“全部内容都显示出来”时的高度判断（日志此时还没打出来）
+  document.body.classList.add("measure");
+  document.querySelectorAll<HTMLElement>(".page:not(.scan-page)").forEach(sec => {
+    const sheet = sec.querySelector<HTMLElement>(".sheet")!;
+    sec.classList.toggle("flow", sheet.offsetHeight + 32 > innerHeight);
+  });
+  document.body.classList.remove("measure");
+}
+layout();
+addEventListener("resize", layout);
+
 /* ======================= 主循环 ======================= */
 const sections: [HTMLElement, (p: number, t: number) => void][] = [
   [p1, p => stepElements(p1, p)],
@@ -325,8 +366,24 @@ const sections: [HTMLElement, (p: number, t: number) => void][] = [
   [p4, drawLog],
   [p5, (p, t) => { stepElements(p5, p); drawCard(p, t); }],
 ];
+let current: HTMLElement | null = null;
+const stampsOn = new WeakSet<Element>();
+function audio() {
+  // 当前占据视口中线的那一页
+  const mid = innerHeight / 2;
+  const here = sections.map(s => s[0]).find(el => { const r = el.getBoundingClientRect(); return r.top <= mid && r.bottom >= mid; }) ?? null;
+  if (here !== current) { if (current || here) score.page(); current = here; score.setMode(here === p3 ? "monitor" : "paper"); }
+  document.querySelectorAll(".stamp[data-at]").forEach(st => {
+    const on = st.classList.contains("on");
+    if (on && !stampsOn.has(st)) { stampsOn.add(st); score.stamp(); }
+    if (!on) stampsOn.delete(st);
+  });
+  const level = here === p2 ? .25 + waveCarrier * .75 : here === p3 ? .15 + gaze * .85 : here === p4 ? logCarrier : here === p5 ? .2 : 0;
+  score.setCarrier(level);
+}
 function frame(t: number) {
   for (const [el, draw] of sections) if (visible(el)) draw(progress(el), reduce ? 0 : t);
+  audio();
   if (!reduce) requestAnimationFrame(frame);
 }
 function redrawStatic() { for (const [el, draw] of sections) draw(progress(el), 0); }
@@ -338,3 +395,12 @@ Promise.allSettled([load(`${BASE}voxmute.webp`), load(`${BASE}voxmute-card.webp`
 });
 if (reduce) { redrawStatic(); addEventListener("resize", redrawStatic); }
 else requestAnimationFrame(frame);
+
+/* ======================= 声音开关 ======================= */
+const soundBtn = $<HTMLButtonElement>("#sound"), soundLabel = $("#sound-label");
+soundBtn.addEventListener("click", async () => {
+  const on = await score.toggle();
+  soundBtn.setAttribute("aria-pressed", String(on));
+  soundLabel.innerHTML = on ? '声音 开 <span lang="en">Sound on</span>' : '声音 关 <span lang="en">Sound off</span>';
+  if (reduce) addEventListener("scroll", audio, { passive: true });
+});

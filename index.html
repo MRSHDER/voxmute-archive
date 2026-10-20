@@ -3,32 +3,39 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="TXC 生物信号部内部档案：非语言信号体 折声 / VoxMute。向下翻阅以解密。" />
+    <meta name="description" content="《嚣城》TXC 组织研究记录：稳定携带个案 折声 / VoxMute。A TXC research record from THE BUSY CITY." />
     <meta name="theme-color" content="#d9dbd4" />
-    <title>折声 VoxMute — TXC 内部档案</title>
+    <title>折声 VoxMute — TXC 组织研究记录 / TXC Research Record</title>
   </head>
   <body>
-    <a class="skip" href="#p1">跳到档案正文</a>
+    <a class="skip" href="#p1">跳到档案正文 Skip to the record</a>
+    <button class="sound" id="sound" type="button" aria-pressed="false">
+      <span class="sound-wave" aria-hidden="true"><i></i><i></i><i></i></span>
+      <span id="sound-label">声音 关 <span lang="en">Sound off</span></span>
+    </button>
 
     <!-- 封面 -->
     <header class="cover" id="cover">
       <div class="sheet cover-sheet">
         <div class="cover-top">
-          <span class="mono">TXC / 生物信号部</span>
-          <span class="mono">卷宗 TXC-BS-09</span>
+          <span class="mono">TXC 组织 / 海川研究区域<span class="en-inline" lang="en">TXC Organization / Haichuan Research Area</span></span>
+          <span class="mono right">卷宗 TXC-BS-09<span class="en-inline" lang="en">Case file</span></span>
         </div>
-        <p class="org">TXC 内部档案</p>
+        <p class="org">TXC 研究记录</p>
+        <p class="org-en" lang="en">TXC Research Record</p>
         <h1 class="cover-title">
-          <span class="redact" data-label="对象名称已遮蔽">折声</span>
+          <span class="redact">折声</span>
+          <span class="cover-title-en" lang="en">VoxMute</span>
         </h1>
-        <p class="cover-sub">非语言信号体 · 观察与收容记录</p>
+        <p class="cover-sub">宿体观察记录　稳定携带个案</p>
+        <p class="cover-sub-en" lang="en">Host observation record · stable carrier case</p>
         <div class="stamp stamp-cover" aria-hidden="true">限阅</div>
         <dl class="cover-meta">
-          <div><dt>密级</dt><dd>内部</dd></div>
-          <div><dt>页数</dt><dd>5</dd></div>
-          <div><dt>经办</dt><dd class="redact-inline">██████</dd></div>
+          <div><dt>密级 <span lang="en">Classification</span></dt><dd>内部 <span lang="en">Internal</span></dd></div>
+          <div><dt>伦理审查 <span lang="en">Ethics review</span></dt><dd class="redact-inline">████</dd></div>
+          <div><dt>经办 <span lang="en">Handled by</span></dt><dd class="redact-inline">██████</dd></div>
         </dl>
-        <p class="cover-hint">向下翻阅，逐页解密<span class="arrow" aria-hidden="true"></span></p>
+        <p class="cover-hint">向下翻阅，逐页解密<span class="en" lang="en">Scroll down to declassify, page by page</span><span class="arrow" aria-hidden="true"></span></p>
       </div>
     </header>
 
@@ -38,21 +45,22 @@
         <div class="sticky">
           <article class="sheet">
             <header class="sheet-head">
-              <span class="mono">第 1 / 5 页</span>
-              <h2>对象登记</h2>
+              <span class="mono">第 1 / 5 页<span class="en-inline" lang="en">Page 1 of 5</span></span>
+              <h2>对象登记<span class="h2-en" lang="en">Subject registry</span></h2>
             </header>
             <table class="registry">
               <tbody>
-                <tr><th>名称</th><td><span class="bar" data-at="0.08">折声　VoxMute</span></td></tr>
-                <tr><th>编号</th><td><span class="bar mono" data-at="0.2">TXC-BS-09</span></td></tr>
-                <tr><th>类别</th><td><span class="bar" data-at="0.32">非语言信号体</span></td></tr>
-                <tr><th>收容</th><td><span class="bar" data-at="0.44">声学隔离单元　HOLD A</span></td></tr>
-                <tr><th>状态</th><td><span class="bar" data-at="0.56">发声功能已切断；载波仍在</span></td></tr>
-                <tr><th>发声记录</th><td><button class="bar locked" type="button" id="locked-field" aria-describedby="locked-msg">██████████████</button><span class="locked-msg" id="locked-msg" role="status"></span></td></tr>
+                <tr><th>名称<span lang="en">Name</span></th><td><span class="bar" data-at="0.06">折声　VoxMute</span></td></tr>
+                <tr><th>编号<span lang="en">ID</span></th><td><span class="bar mono" data-at="0.15">TXC-BS-09</span></td></tr>
+                <tr><th>物种<span lang="en">Species</span></th><td><span class="bar" data-at="0.24">边境牧羊犬，海盗脸花色<span class="en" lang="en">Border collie, “pirate face” markings</span></span></td></tr>
+                <tr><th>宿体分级<span lang="en">Host class</span></th><td><span class="bar" data-at="0.33">稳定携带（低影响）<span class="en" lang="en">Stable carrier (low impact)</span></span></td></tr>
+                <tr><th>既往史<span lang="en">History</span></th><td><span class="bar" data-at="0.42">喉部锐器伤，系他人所致，与 TXC 无关<span class="en" lang="en">Sharp-force throat injury inflicted by another person; unrelated to TXC</span></span></td></tr>
+                <tr><th>状态<span lang="en">Status</span></th><td><span class="bar" data-at="0.51">发声功能丧失；载波来源待查<span class="en" lang="en">Voice lost; carrier origin under investigation</span></span></td></tr>
+                <tr><th>发声记录<span lang="en">Voice records</span></th><td><button class="bar locked" type="button" id="locked-field" aria-describedby="locked-msg" aria-label="发声记录（已涂黑）Voice records (redacted)">██████████████</button><span class="locked-msg" id="locked-msg" role="status"></span></td></tr>
               </tbody>
             </table>
-            <p class="note">备注：对象可正常行动与进食，对视觉、触觉刺激有稳定反应。<span class="bar" data-at="0.7">不得以“哑”记录。</span></p>
-            <div class="stamp stamp-page" data-at="0.82" aria-hidden="true">已登记</div>
+            <p class="note">备注：对象行动、进食正常，问诊以书写进行。本人未察觉任何 TXC 相关异常。<span class="bar" data-at="0.66">不得以“哑”记录。</span><span class="en" lang="en">Note: mobility and eating are normal; interviews are held in writing. The subject has noticed no TXC-related change. Do not record as “mute.”</span></p>
+            <div class="stamp stamp-page" data-at="0.8" aria-hidden="true">已登记</div>
           </article>
         </div>
       </section>
@@ -62,30 +70,30 @@
         <div class="sticky">
           <article class="sheet sheet-wide">
             <header class="sheet-head">
-              <span class="mono">第 2 / 5 页</span>
-              <h2>发声功能</h2>
+              <span class="mono">第 2 / 5 页<span class="en-inline" lang="en">Page 2 of 5</span></span>
+              <h2>发声功能<span class="h2-en" lang="en">Vocal function</span></h2>
             </header>
             <div class="wave-wrap">
-              <canvas id="wave" aria-label="声波记录：向下滚动时声波在中间被切断，切断后仍留有一条微弱的载波。把指针移近载波，它会起伏。" role="img"></canvas>
-              <div class="wave-labels mono" aria-hidden="true"><span>喉部麦克风</span><span id="wave-state">记录中</span></div>
+              <canvas id="wave" role="img" aria-label="声波记录：向下滚动时声波在受伤处断开，之后只剩一条微弱的载波。把指针移近载波，它会起伏。Voice trace: as you scroll, the waveform breaks at the injury and only a faint carrier remains. Move your pointer near it and it rises."></canvas>
+              <div class="wave-labels mono" aria-hidden="true"><span>喉部麦克风 THROAT MIC</span><span id="wave-state">记录中 REC</span></div>
             </div>
             <div class="voice-copy">
-              <p class="step" data-at="0.15">切断前：对象发声正常，频谱接近同龄个体。</p>
-              <p class="step" data-at="0.45">喉部切断后，可听声音完全消失。</p>
-              <p class="step" data-at="0.7">但房间麦克风仍持续收到一条窄带载波。它不随呼吸变化，只在有人靠近时上扬。</p>
-              <p class="step quote" data-at="0.88">勿将其解释为语言。亦勿归类为沉默。</p>
+              <p class="step" data-at="0.15">参考：同龄同类个体的正常发声。<span class="en" lang="en">Reference: normal vocalisation from a same-age border collie.</span></p>
+              <p class="step" data-at="0.45">对象喉部受伤后，可听声音为零。<span class="en" lang="en">After the throat injury, audible sound is zero.</span></p>
+              <p class="step" data-at="0.65">但观察室麦克风持续收到一条窄带载波，只在有人靠近时上扬。研究假设：TXC 定殖可能参与了这条信号，待验证。<span class="en" lang="en">Yet the room microphone keeps picking up a narrow-band carrier that rises only when someone comes near. Hypothesis: TXC colonisation may be involved. Unverified.</span></p>
+              <p class="step quote" data-at="0.85">勿将其解释为语言。亦勿归类为沉默。<span class="en" lang="en">Do not interpret as speech. Do not classify as silence.</span></p>
             </div>
-            <p class="try mono" data-at="0.75">把指针移到载波附近试试</p>
+            <p class="try mono" data-at="0.75">把指针移到载波附近试试　Move your pointer near the carrier</p>
           </article>
         </div>
       </section>
 
-      <!-- 第 3 页：体征扫描（机器视觉） -->
+      <!-- 第 3 页：体表检查（机器视觉） -->
       <section class="page scan-page" id="p3" data-scroll="scan">
         <div class="sticky monitor">
-          <canvas id="scan" role="img" aria-label="折声全身图的机器视觉扫描：扫描线由上至下，扫过的部分从线框变为原画，并标出眼睛、缝合口、耳标、胸口信号源、约束装置和尾部。"></canvas>
+          <canvas id="scan" role="img" aria-label="折声全身图的机器视觉扫描：扫描线由上至下，扫过的部分从线框变为原画，并标出耳饰、眼睛、缝合痕、胸口标记、腕部束环和尾部。Machine-vision scan of VoxMute's full body: the scanline moves down, turning the wireframe into the original art and labelling the ear tag, eyes, sutures, chest mark, wrist cuffs and tail."></canvas>
           <div class="hud mono" aria-hidden="true">
-            <span>CAM-07 / 体征扫描</span>
+            <span>CAM-07 / 体表检查 SURFACE EXAM</span>
             <span id="scan-pct">00%</span>
           </div>
           <ol class="callouts" id="callouts"></ol>
@@ -99,40 +107,43 @@
         <div class="sticky">
           <article class="sheet">
             <header class="sheet-head">
-              <span class="mono">第 4 / 5 页</span>
-              <h2>观察日志</h2>
+              <span class="mono">第 4 / 5 页<span class="en-inline" lang="en">Page 4 of 5</span></span>
+              <h2>观察日志<span class="h2-en" lang="en">Observation log</span></h2>
             </header>
             <ol class="log" id="log"></ol>
             <div class="meter" aria-hidden="true">
-              <span class="mono">载波读数</span>
+              <span class="mono">载波 CARRIER</span>
               <span class="meter-bar"><i id="meter-fill"></i></span>
               <span class="mono" id="meter-val">0.0</span>
+              <span class="mono" id="glucose">血糖 GLUCOSE ±0.00</span>
             </div>
           </article>
         </div>
       </section>
 
-      <!-- 第 5 页：解封 -->
+      <!-- 第 5 页：影像资料 -->
       <section class="page" id="p5" data-scroll="release">
         <div class="sticky">
           <article class="sheet sheet-release">
             <header class="sheet-head">
-              <span class="mono">第 5 / 5 页</span>
-              <h2>影像解封</h2>
+              <span class="mono">第 5 / 5 页<span class="en-inline" lang="en">Page 5 of 5</span></span>
+              <h2>影像资料<span class="h2-en" lang="en">Image record</span></h2>
             </header>
             <div class="portrait" id="portrait">
-              <canvas id="card" role="img" aria-label="折声的半身像，从轮廓线逐渐显出原画。点击画面会发出一圈载波。"></canvas>
+              <canvas id="card" role="img" aria-label="折声的半身像，从轮廓线逐渐显出原画。点击画面会发出一圈载波。VoxMute's portrait, emerging from line art into the original. Click it to send out a ring of carrier."></canvas>
             </div>
             <p class="release-line">信号仍在。</p>
-            <div class="stamp stamp-release" data-at="0.9" aria-hidden="true">解封</div>
+            <p class="release-en" lang="en">The signal remains.</p>
+            <div class="stamp stamp-release" data-at="0.9" aria-hidden="true">归档</div>
           </article>
         </div>
       </section>
     </main>
 
     <footer class="credits">
-      <p>立绘　MRSHDER　　角色设计　Goose hair</p>
-      <p class="mono">TXC 为虚构机构。本档案为角色设定作品。</p>
+      <p>立绘 <span lang="en">Art</span>　MRSHDER　　角色设计 <span lang="en">Character design</span>　Goose hair</p>
+      <p>《嚣城 / THE BUSY CITY》角色设定作品 <span lang="en">· A character file from THE BUSY CITY</span></p>
+      <p class="mono">TXC 为作品中虚构的异常生命体，及以其命名的研究组织。<br><span lang="en">TXC is a fictional anomalous life form in this work, and the research organisation named after it.</span></p>
     </footer>
 
     <script type="module" src="/src/main.ts"></script>
