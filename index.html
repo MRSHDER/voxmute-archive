@@ -3,16 +3,138 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>TXC INTERNAL ARCHIVE — VoxMute / 折声</title>
+    <meta name="description" content="TXC 生物信号部内部档案：非语言信号体 折声 / VoxMute。向下翻阅以解密。" />
+    <meta name="theme-color" content="#d9dbd4" />
+    <title>折声 VoxMute — TXC 内部档案</title>
   </head>
   <body>
-    <div id="stage">
-      <canvas id="frame" width="1920" height="1080"></canvas>
-      <div id="hud">
-        <span id="time-label">00.00 / 30.00</span>
-        <span class="hint">SPACE 播放/暂停 · R 重播 · F 全屏 · H 隐藏提示</span>
+    <a class="skip" href="#p1">跳到档案正文</a>
+
+    <!-- 封面 -->
+    <header class="cover" id="cover">
+      <div class="sheet cover-sheet">
+        <div class="cover-top">
+          <span class="mono">TXC / 生物信号部</span>
+          <span class="mono">卷宗 TXC-BS-09</span>
+        </div>
+        <p class="org">TXC 内部档案</p>
+        <h1 class="cover-title">
+          <span class="redact" data-label="对象名称已遮蔽">折声</span>
+        </h1>
+        <p class="cover-sub">非语言信号体 · 观察与收容记录</p>
+        <div class="stamp stamp-cover" aria-hidden="true">限阅</div>
+        <dl class="cover-meta">
+          <div><dt>密级</dt><dd>内部</dd></div>
+          <div><dt>页数</dt><dd>5</dd></div>
+          <div><dt>经办</dt><dd class="redact-inline">██████</dd></div>
+        </dl>
+        <p class="cover-hint">向下翻阅，逐页解密<span class="arrow" aria-hidden="true"></span></p>
       </div>
-    </div>
+    </header>
+
+    <main>
+      <!-- 第 1 页：对象登记 -->
+      <section class="page" id="p1" data-scroll="registry">
+        <div class="sticky">
+          <article class="sheet">
+            <header class="sheet-head">
+              <span class="mono">第 1 / 5 页</span>
+              <h2>对象登记</h2>
+            </header>
+            <table class="registry">
+              <tbody>
+                <tr><th>名称</th><td><span class="bar" data-at="0.08">折声　VoxMute</span></td></tr>
+                <tr><th>编号</th><td><span class="bar mono" data-at="0.2">TXC-BS-09</span></td></tr>
+                <tr><th>类别</th><td><span class="bar" data-at="0.32">非语言信号体</span></td></tr>
+                <tr><th>收容</th><td><span class="bar" data-at="0.44">声学隔离单元　HOLD A</span></td></tr>
+                <tr><th>状态</th><td><span class="bar" data-at="0.56">发声功能已切断；载波仍在</span></td></tr>
+                <tr><th>发声记录</th><td><button class="bar locked" type="button" id="locked-field" aria-describedby="locked-msg">██████████████</button><span class="locked-msg" id="locked-msg" role="status"></span></td></tr>
+              </tbody>
+            </table>
+            <p class="note">备注：对象可正常行动与进食，对视觉、触觉刺激有稳定反应。<span class="bar" data-at="0.7">不得以“哑”记录。</span></p>
+            <div class="stamp stamp-page" data-at="0.82" aria-hidden="true">已登记</div>
+          </article>
+        </div>
+      </section>
+
+      <!-- 第 2 页：发声功能 -->
+      <section class="page" id="p2" data-scroll="voice">
+        <div class="sticky">
+          <article class="sheet sheet-wide">
+            <header class="sheet-head">
+              <span class="mono">第 2 / 5 页</span>
+              <h2>发声功能</h2>
+            </header>
+            <div class="wave-wrap">
+              <canvas id="wave" aria-label="声波记录：向下滚动时声波在中间被切断，切断后仍留有一条微弱的载波。把指针移近载波，它会起伏。" role="img"></canvas>
+              <div class="wave-labels mono" aria-hidden="true"><span>喉部麦克风</span><span id="wave-state">记录中</span></div>
+            </div>
+            <div class="voice-copy">
+              <p class="step" data-at="0.15">切断前：对象发声正常，频谱接近同龄个体。</p>
+              <p class="step" data-at="0.45">喉部切断后，可听声音完全消失。</p>
+              <p class="step" data-at="0.7">但房间麦克风仍持续收到一条窄带载波。它不随呼吸变化，只在有人靠近时上扬。</p>
+              <p class="step quote" data-at="0.88">勿将其解释为语言。亦勿归类为沉默。</p>
+            </div>
+            <p class="try mono" data-at="0.75">把指针移到载波附近试试</p>
+          </article>
+        </div>
+      </section>
+
+      <!-- 第 3 页：体征扫描（机器视觉） -->
+      <section class="page scan-page" id="p3" data-scroll="scan">
+        <div class="sticky monitor">
+          <canvas id="scan" role="img" aria-label="折声全身图的机器视觉扫描：扫描线由上至下，扫过的部分从线框变为原画，并标出眼睛、缝合口、耳标、胸口信号源、约束装置和尾部。"></canvas>
+          <div class="hud mono" aria-hidden="true">
+            <span>CAM-07 / 体征扫描</span>
+            <span id="scan-pct">00%</span>
+          </div>
+          <ol class="callouts" id="callouts"></ol>
+          <p class="scan-detail" id="scan-detail" role="status"></p>
+          <div class="reticle" id="reticle" aria-hidden="true"><span id="reticle-xy" class="mono"></span></div>
+        </div>
+      </section>
+
+      <!-- 第 4 页：观察日志 -->
+      <section class="page" id="p4" data-scroll="log">
+        <div class="sticky">
+          <article class="sheet">
+            <header class="sheet-head">
+              <span class="mono">第 4 / 5 页</span>
+              <h2>观察日志</h2>
+            </header>
+            <ol class="log" id="log"></ol>
+            <div class="meter" aria-hidden="true">
+              <span class="mono">载波读数</span>
+              <span class="meter-bar"><i id="meter-fill"></i></span>
+              <span class="mono" id="meter-val">0.0</span>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <!-- 第 5 页：解封 -->
+      <section class="page" id="p5" data-scroll="release">
+        <div class="sticky">
+          <article class="sheet sheet-release">
+            <header class="sheet-head">
+              <span class="mono">第 5 / 5 页</span>
+              <h2>影像解封</h2>
+            </header>
+            <div class="portrait" id="portrait">
+              <canvas id="card" role="img" aria-label="折声的半身像，从轮廓线逐渐显出原画。点击画面会发出一圈载波。"></canvas>
+            </div>
+            <p class="release-line">信号仍在。</p>
+            <div class="stamp stamp-release" data-at="0.9" aria-hidden="true">解封</div>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <footer class="credits">
+      <p>立绘　MRSHDER　　角色设计　Goose hair</p>
+      <p class="mono">TXC 为虚构机构。本档案为角色设定作品。</p>
+    </footer>
+
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>
