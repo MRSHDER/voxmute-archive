@@ -109,8 +109,11 @@ h1, h2 { font-weight: 700; margin: 0; }
 .registry th { width: 6.5em; text-align: left; font-weight: 400; color: var(--ink-soft); padding: 10px 0; vertical-align: top; border-bottom: 1px solid var(--paper-2); }
 .registry td { padding: 10px 0; border-bottom: 1px solid var(--paper-2); }
 .bar { position: relative; display: inline; }
+/* 中英双行的 .bar 内含块级 .en：inline 会被拆开，涂黑条宽度塌成一条竖线，所以改成收缩包裹的块 */
+.registry td .bar { display: inline-block; max-width: 100%; vertical-align: top; }
+.registry td .bar::after { right: 0; }
 .bar::after { content: ""; position: absolute; left: -3px; right: -3px; top: .2em; bottom: .05em; background: var(--redact); transform-origin: right; transform: scaleX(var(--cover, 1)); }
-button.bar { font: inherit; border: 0; background: var(--redact); color: var(--redact); cursor: not-allowed; padding: 0 4px; }
+button.bar { font: inherit; border: 0; background: var(--redact); color: var(--redact); cursor: not-allowed; padding: 0 4px; margin: 0 0 0 -3px; }
 button.bar::after { display: none; }
 button.bar.denied { animation: shake .35s; }
 @keyframes shake { 25% { transform: translateX(-4px); } 75% { transform: translateX(4px); } }
