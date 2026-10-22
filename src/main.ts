@@ -396,11 +396,34 @@ Promise.allSettled([load(`${BASE}voxmute.webp`), load(`${BASE}voxmute-card.webp`
 if (reduce) { redrawStatic(); addEventListener("resize", redrawStatic); }
 else requestAnimationFrame(frame);
 
-/* ======================= 声音开关 ======================= */
+/* ======================= 声音开关 =======================
+   默认开启。浏览器不允许未经操作自动出声，所以访客第一次点击/触摸/按键时才真正开始；
+   之后可用右上角按钮关闭，选择会记在本地。 */
 const soundBtn = $<HTMLButtonElement>("#sound"), soundLabel = $("#sound-label");
+const SOUND_KEY = "voxmute-sound";
+let wantSound = true;
+try { wantSound = localStorage.getItem(SOUND_KEY) !== "off"; } catch { /* 隐私模式下无法读取，按默认 */ }
+
+function renderSound() {
+  soundBtn.setAttribute("aria-pressed", String(wantSound));
+  soundLabel.innerHTML = wantSound ? '声音 开 <span lang="en">Sound on</span>' : '声音 关 <span lang="en">Sound off</span>';
+}
+async function applySound() {
+  if (score.on !== wantSound) await score.toggle();
+  if (wantSound && reduce) addEventListener("scroll", audio, { passive: true });
+}
+renderSound();
+
+const unlock = (e: Event) => {
+  if (soundBtn.contains(e.target as Node)) return;   // 点按钮本身走下面的开关逻辑
+  for (const type of ["pointerup", "keydown", "touchend"]) removeEventListener(type, unlock, true);
+  if (wantSound) applySound();
+};
+for (const type of ["pointerup", "keydown", "touchend"]) addEventListener(type, unlock, true);
+
 soundBtn.addEventListener("click", async () => {
-  const on = await score.toggle();
-  soundBtn.setAttribute("aria-pressed", String(on));
-  soundLabel.innerHTML = on ? '声音 开 <span lang="en">Sound on</span>' : '声音 关 <span lang="en">Sound off</span>';
-  if (reduce) addEventListener("scroll", audio, { passive: true });
+  wantSound = !wantSound;
+  try { localStorage.setItem(SOUND_KEY, wantSound ? "on" : "off"); } catch { /* 忽略 */ }
+  renderSound();
+  await applySound();
 });
