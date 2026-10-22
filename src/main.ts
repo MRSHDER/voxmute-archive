@@ -406,11 +406,15 @@ try { wantSound = localStorage.getItem(SOUND_KEY) !== "off"; } catch { /* 隐私
 
 function renderSound() {
   soundBtn.setAttribute("aria-pressed", String(wantSound));
-  soundLabel.innerHTML = wantSound ? '声音 开 <span lang="en">Sound on</span>' : '声音 关 <span lang="en">Sound off</span>';
+  // 想开但还没被浏览器放行时，提示访客点一下
+  soundLabel.innerHTML = !wantSound ? '声音 关 <span lang="en">Sound off</span>'
+    : score.on ? '声音 开 <span lang="en">Sound on</span>'
+    : '点击任意处开启声音 <span lang="en">Tap anywhere for sound</span>';
 }
 async function applySound() {
   if (score.on !== wantSound) await score.toggle();
   if (wantSound && reduce) addEventListener("scroll", audio, { passive: true });
+  renderSound();
 }
 renderSound();
 
